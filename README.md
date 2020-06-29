@@ -13,6 +13,6 @@ output: title.csv
 
 
 #### 2. Retrieve metadata of papers
-**scholarly** a python module to retrieve metadata from google scholar search engine, to get metadata of a given paper title
+**scholarly** is a python module to retrieve metadata from google scholar search engine, to get metadata of a given paper title
 
 example: get\_paper\_info.py
