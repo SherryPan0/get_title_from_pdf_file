@@ -14,13 +14,16 @@ import multiprocessing as mp
 # using two modules to extract titles from pdf files
 # method 1: using pdftitle module
 def get_title_pdftitle(path):
-    try:
-        cmd = 'pdftitle -p {}'.format(path)
-        res = os.popen(cmd)
-        title = res.read()
-        return title
-    except:
-        print('Fail to parse:\n', path)
+    """
+    get metadata info from a pdf file, here we only return titles
+    :param path(str): pdf file path,
+            path = "/Users/sherry/Google_Drive/transfer/SchRecSubset1/DaMon/DaMon2008/p41jouini.pdf"
+    :return: title(str)
+    """
+    cmd = 'pdftitle -p {}'.format(path)
+    res = os.popen(cmd)
+    title = res.read()
+    return title
 
 # method 2: using pypdf2 module
 def get_info_pypdf2(path):
@@ -28,7 +31,7 @@ def get_info_pypdf2(path):
     get metadata info from a pdf file, here we only return titles
     :param path(str): pdf file path,
             path = "/Users/sherry/Google_Drive/transfer/SchRecSubset1/DaMon/DaMon2008/p41jouini.pdf"
-    :return:
+    :return: title(str)
     """
     with open(path, 'rb') as f:
         pdf = PdfFileReader(f)
@@ -41,7 +44,12 @@ def get_info_pypdf2(path):
     title = info.title
     return title
 
+
 def iter_files(rootDir):
+    """
+    :param rootDir(str): root directory that contains all pdf files
+    :return:
+    """
     file_name_list = []
     for root,dirs,files in os.walk(rootDir):
         for file in files:
@@ -82,22 +90,12 @@ def job(path_list):
             # print('fail to extract title from this file: ', path)
     df = pd.DataFrame(title_ls, columns=['paperID', 'title_pdftitle', 'title_pypdf2'])
     fail_df = pd.DataFrame(fail_ls, columns=['fail_path'])
-    df.to_csv('titles_{}.csv'.format(group_name), index=False)
-    fail_df.to_csv('fail_ls_{}.csv'.format(group_name), index=False)
+    df.to_csv('result/titles_{}.csv'.format(group_name), index=False)
     print('running time of this job: ', datetime.datetime.now() - start)
     return  df, fail_df
 
-# normal method
-'''
-if __name__ == '__main__':
-    start = datetime.datetime.now()
-    rootDir = '/Users/sherry/PycharmProjects/pdftitle/test_set'
-    # rootDir = input('the root directory of all pdf files: ')
-    pdf_ls = iter_files(rootDir)
-    sub_ls = partition(pdf_ls,10)
-    for index,path_ls in enumerate(sub_ls):
-        res = job(path_ls, index)
-'''
+
+
 # speed up by using multiprocess
 if __name__ == '__main__':
     start = datetime.datetime.now()
@@ -105,7 +103,7 @@ if __name__ == '__main__':
     # rootDir = input('the root directory of all pdf files: ')
     pdf_ls = iter_files(rootDir)
     # print('the root directory of all pdf files: ', len(pdf_ls))
-    sub_ls = partition(pdf_ls,5000)
+    sub_ls = partition(pdf_ls,10)
     first_param = sub_ls
     second_param = list(range(len(sub_ls)))
     print('second param: ', second_param)
