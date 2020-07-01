@@ -9,7 +9,7 @@ Two python modules were used to extract titles:
 Code: extract_title.py
 
 * Input: root directory that contains all candidate papers in pdf format.
-* Output: a dataframe with three columns: [paperID, title\_pdftitle, title\_pypdf2]
+* Output: csv files with three columns: [paperID, title\_pdftitle, title\_pypdf2] in direcrory "result/"
 
 
 
